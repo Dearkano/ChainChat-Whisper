@@ -1,0 +1,32 @@
+@import "../../assets/base.scss";
+.chat-header-wrapper{
+    border-bottom: 1px solid $border;
+    height: 50px;
+    background-color: #fff;
+    line-height: 50px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    font-size: 26px;
+    .chat-title{
+        padding-left: 30px;
+        font-size: 18px;
+    }
+    .back-icon {
+        color: $blue;
+        display: none;
+    }
+    .icon {
+        position: absolute;
+        cursor: pointer;
+        z-index: 99;
+    }
+    .information-icon {
+        right: 20px;
+        font-size: 24px;
+    }
+    .shareIcon {
+        right: 50px;
+        font-size: 28px;
+    }
+}

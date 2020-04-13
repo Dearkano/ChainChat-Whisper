@@ -1,0 +1,101 @@
+@import "../../assets/base.scss";
+.privateUnread, .groupUnread {
+    border-radius: 50%;
+    color: #fff;
+    z-index: 8;
+    position: absolute;
+    bottom: 14px;
+    right: 20px;
+
+}
+
+.robotItem {
+    width: 100%;
+    .robotTitle {
+        font-size: 16px !important;
+    }
+}
+ 
+.homePageList {
+    background-color: #fff;
+    list-style: none;
+    li {
+        cursor: pointer;
+        &:hover  {
+            background-color: #f5f5f5;
+        }
+        list-style-type: none;
+        padding: 10px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        .title{
+            color: #000;
+        }
+        a {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            align-items: center;
+            text-decoration : none;
+            .userAvatar {
+                position: relative;
+            }
+        }
+        .twoDigitsUnread {
+            padding: 1px 2.8px 2px;
+            font-size: 10px;
+        }
+        .threeDigitsUnread  {
+            padding: 1.4px 2.8px;
+            font-size: 10px;
+        }
+        .oneDigitUnread {
+            padding: 0 4px;
+            font-size: 12px;
+        }
+        .privateUnread {
+            background-color: red;
+        }
+        .groupUnread {
+            background-color: #98d1f2;
+        }
+        .content {
+            display: inline-block;
+            margin-left: 10px;
+            max-width: 80%;
+            .title {
+                font-size: 18px;
+                padding-bottom: 4px;
+                .time {
+                    font-size: 14px;
+                    color: $title;
+                    padding: 0 9px;
+                    position: absolute;
+                    top: 14px;
+                    right: 0;
+                }
+                .name {
+                    font-size: 14px;
+                    overflow: hidden;
+                    text-overflow:ellipsis;
+                    white-space: nowrap;
+                    width: 120px;
+                }
+            }
+            .message {
+                color: $title;
+                font-size: 12px;
+                max-height: 42px;
+                position: relative;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                width: 120px;
+                white-space: nowrap;
+                .callMe {
+                    color: red;
+                }
+            }
+        }
+    }
+}   

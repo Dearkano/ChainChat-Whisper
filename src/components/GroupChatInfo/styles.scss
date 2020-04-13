@@ -1,0 +1,78 @@
+@import "../../assets/base.scss";
+.chatInformation {
+    height: calc(100% - 50px);
+    width: 200px;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: $backgroundColor;
+    opacity: 0.97;
+    z-index: 99;
+    .info {
+      padding: 10px 16px;
+      .noticeTitle {
+        color: $title;
+        padding-bottom: 10px;
+        font-size: 14px;
+        position: relative;
+        .iconEditor {
+          position: absolute;
+          right: 10px;
+          font-size: 18px;
+          cursor: pointer;
+        }
+      }
+      .noticeContent {
+          word-wrap: break-word;
+          height: 60px;
+          overflow: hidden;
+          overflow-y: auto;
+          font-size: 12px;
+      }
+      .memberTitle {
+        font-size: 14px;
+        padding-top: 10px;
+        color: $title;
+        display: flex;
+        justify-content: space-between;
+        .showAllMember {
+          color: $blue;
+          cursor: pointer;
+        }
+      }
+    }
+    .members{
+      list-style: none;
+      overflow-y: auto;
+      font-size: 18px;
+      height: calc(100% - 190px);
+      .member {
+        &:hover {
+          background-color: #fff;
+        }
+        padding: 6px 10px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        .memberName {
+          font-size: 14px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          width: 120px;
+          padding-left: 10px;
+        }
+      }
+    }
+    .leave {
+      position: absolute;
+      bottom: 0;
+      border-top: 1px solid $border;
+      width: 100%;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 14px;
+      color: $warnRed;
+      cursor: pointer;
+    }
+}
