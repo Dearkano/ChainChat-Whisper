@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
-import Request from '../../utils/request';
 import Modal from '../../components/Modal';
 import notification from '../../components/Notification';
 import SignInSignUp from '../../components/SignInSignUp';
+import InitApp from '../../modules/InitApp';
 import './index.scss';
 
 class LogIn extends Component {
@@ -42,17 +42,36 @@ class LogIn extends Component {
       // } else {
       //   notification(res.message, 'error');
       // }
-      const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-      const shh = web3.shh;
-      const id = await shh.newKeyPair();
-      const pubKey = await shh.getPublicKey(id);
-      localStorage.setItem('userInfo', JSON.stringify({ pubKey }));
-      console.log(pubKey);
-      this.setState({
-        modal: {
-          visible: true,
-        },
+      const headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+      const body = JSON.stringify({
+        username: name,
+        password,
       });
+      const response = await fetch('http://localhost:7001/login', {
+        method: 'post',
+        headers,
+        body,
+      });
+      const data = await response.json();
+      if (data.success) {
+        const { pubKey, asymKeyId } = data.message;
+        localStorage.setItem(
+          'userInfo',
+          JSON.stringify({
+            pubKey,
+            asymKeyId,
+            user_id: pubKey,
+            username: name,
+          }),
+        );
+        await InitApp.init();
+        this.setState({
+          modal: {
+            visible: true,
+          },
+        });
+      }
     } catch (error) {
       notification(error, 'error');
     }
@@ -92,8 +111,8 @@ class LogIn extends Component {
     return (
       <div className="login">
         <Modal title="提示" visible={visible} confirm={this.confirm} hasConfirm>
-          <p className="content"> 您已登录成功 </p>{' '}
-        </Modal>{' '}
+          <p className="content"> 您已登录成功</p>
+        </Modal>
         <SignInSignUp setValue={this.setValue} isRegister />
       </div>
     );

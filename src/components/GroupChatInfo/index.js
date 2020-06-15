@@ -20,14 +20,14 @@ export default class GroupChatInfo extends Component {
 
   componentDidMount() {
     const groupId = this.props.chatId;
-    window.socket.emit('getGroupMember', groupId, data => {
-      data.sort((a, b) => b.status - a.status);
-      const onlineMember = data.filter(e => e.status === 1);
-      this.setState({
-        groupMember: data,
-        onlineNumber: onlineMember.length,
-      });
-    });
+    // window.socket.emit('getGroupMember', groupId, data => {
+    //   data.sort((a, b) => b.status - a.status);
+    //   const onlineMember = data.filter(e => e.status === 1);
+    //   this.setState({
+    //     groupMember: data,
+    //     onlineNumber: onlineMember.length,
+    //   });
+    // });
   }
 
   _clickMember = user_id => {
@@ -83,21 +83,21 @@ export default class GroupChatInfo extends Component {
       group_notice: groupNotice,
       to_group_id,
     };
-    window.socket.emit('updateGroupInfo', data, res => {
-      updateGroupTitleNotice({
-        allGroupChats,
-        groupNotice,
-        groupName,
-        groupId: to_group_id,
-      });
-      updateListGroupName({
-        homePageList,
-        name: groupName,
-        to_group_id,
-      });
-      notification(res, 'success');
-      this._closeModal();
-    });
+    // window.socket.emit('updateGroupInfo', data, res => {
+    //   updateGroupTitleNotice({
+    //     allGroupChats,
+    //     groupNotice,
+    //     groupName,
+    //     groupId: to_group_id,
+    //   });
+    //   updateListGroupName({
+    //     homePageList,
+    //     name: groupName,
+    //     to_group_id,
+    //   });
+    //   notification(res, 'success');
+    //   this._closeModal();
+    // });
   };
 
   _showAllMember = () => {

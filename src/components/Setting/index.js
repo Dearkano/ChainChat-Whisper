@@ -21,8 +21,9 @@ function Setting({ initApp, history, globalSettings, setGlobalSettings }) {
   const [githubStars, setGithubStars] = useState('--');
 
   const logout = () => {
-    window.socket.disconnect();
+    // window.socket.disconnect();
     localStorage.removeItem('userInfo');
+    localStorage.clear()
     initApp(false);
     history.push('/login');
   };

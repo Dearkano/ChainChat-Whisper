@@ -25,7 +25,7 @@ export default class Request {
 
   static socketEmit(emitName, data, onError) {
     try {
-      window.socket.emit(emitName, data);
+      // window.socket.emit(emitName, data);
     } catch (error) {
       if (onError) {
         onError(error);
@@ -36,9 +36,9 @@ export default class Request {
   static socketEmitAndGetResponse(emitName, data, onError) {
     return new Promise((resolve, reject) => {
       try {
-        window.socket.emit(emitName, data, response => {
-          resolve(response);
-        });
+        // // window.socket.emit(emitName, data, response => {
+        //   resolve(response);
+        // });
       } catch (error) {
         if (onError) {
           onError(error);

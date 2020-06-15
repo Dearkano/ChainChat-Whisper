@@ -17,7 +17,10 @@ const updateHomePageListAction = ({
   showCallMeTip = false,
 }) => {
   const homePageListCopy = [...List(homePageList)];
-  const dataCopy = { ...data, showCallMeTip };
+  const dataCopy = {
+    ...data,
+    showCallMeTip,
+  };
   let chatFromId;
   if (dataCopy && dataCopy.to_user) {
     chatFromId = dataCopy.from_user === myUserId ? dataCopy.to_user : dataCopy.from_user;
@@ -35,8 +38,18 @@ const updateHomePageListAction = ({
       if (user_id === chatFromId || to_group_id === chatFromId) {
         const updatedUnread = unread + increaseUnread;
         const { message, time } = dataCopy;
+        const data = JSON.parse(message.split(': ')[1]);
+        const type = data.type;
+        let messageForHomePage = '';
+        if (type === 'image') {
+          messageForHomePage = `${message.split(': ')[0]}: [图片]`;
+        } else if (type === 'text') {
+          messageForHomePage = `${message.split(': ')[0]}: ${data.text}`;
+        } else {
+          messageForHomePage = `${message.split(': ')[0]}: [文件]`;
+        }
         homePageListCopy[i] = Object.assign(homePageListCopy[i], {
-          message,
+          message: messageForHomePage,
           time,
           unread: updatedUnread,
           showCallMeTip,
@@ -45,8 +58,25 @@ const updateHomePageListAction = ({
       }
     }
   } else {
-    dataCopy.unread = increaseUnread;
-    homePageListCopy.push(dataCopy);
+    const { message, time } = dataCopy;
+    const data = JSON.parse(message.split(': ')[1]);
+    const type = data.type;
+    let messageForHomePage = '';
+    if (type === 'image') {
+      messageForHomePage = `${message.split(': ')[0]}: [图片]`;
+    } else if (type === 'text') {
+      messageForHomePage = `${message.split(': ')[0]}: ${data.text}`;
+    } else {
+      messageForHomePage = `${message.split(': ')[0]}: [文件]`;
+    }
+    homePageListCopy.push({
+      ...dataCopy,
+      message: messageForHomePage,
+      time,
+      unread: increaseUnread,
+      showCallMeTip,
+    });
+    console.log(homePageListCopy)
   }
   return {
     type: UPDATE_HOME_PAGE_LIST,

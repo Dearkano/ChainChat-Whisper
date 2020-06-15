@@ -40,6 +40,7 @@ const addPrivateChatInfoAction = ({ allPrivateChats, chatId, userInfo }) => {
   } else {
     allPrivateChatsCopy.set(chatId, { userInfo });
   }
+  localStorage.setItem('privateChatList', JSON.stringify(allPrivateChatsCopy));
   return { type: ADD_PRIVATE_INFO, data: allPrivateChatsCopy };
 };
 

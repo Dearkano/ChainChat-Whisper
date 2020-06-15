@@ -29,33 +29,33 @@ export default class Header extends Component {
       creator_id: user_id,
       // create_time: Date.parse(new Date()) / 1000
     };
-    window.socket.emit('createGroup', data, res => {
-      const {
-        addGroupMessageAndInfo,
-        updateHomePageList,
-        homePageList,
-        allGroupChats,
-      } = this.props;
-      const members = [
-        {
-          user_id,
-          name,
-          status: 1,
-        },
-      ];
-      const groupInfo = Object.assign({ members }, res);
-      res.message = `${name}: 创建群成功！`;
-      res.time = res.create_time;
-      res.from_user = res.creator_id;
-      updateHomePageList({ data: res, homePageList });
-      addGroupMessageAndInfo({
-        allGroupChats,
-        message: { ...res, name },
-        groupId: res.to_group_id,
-        groupInfo,
-      });
-      this.props.history.push(`/group_chat/${res.to_group_id}`);
-    });
+    // window.socket.emit('createGroup', data, res => {
+    //   const {
+    //     addGroupMessageAndInfo,
+    //     updateHomePageList,
+    //     homePageList,
+    //     allGroupChats,
+    //   } = this.props;
+    //   const members = [
+    //     {
+    //       user_id,
+    //       name,
+    //       status: 1,
+    //     },
+    //   ];
+    //   const groupInfo = Object.assign({ members }, res);
+    //   res.message = `${name}: 创建群成功！`;
+    //   res.time = res.create_time;
+    //   res.from_user = res.creator_id;
+    //   updateHomePageList({ data: res, homePageList });
+    //   addGroupMessageAndInfo({
+    //     allGroupChats,
+    //     message: { ...res, name },
+    //     groupId: res.to_group_id,
+    //     groupInfo,
+    //   });
+    //   this.props.history.push(`/group_chat/${res.to_group_id}`);
+    // });
   };
 
   openModal = () => {

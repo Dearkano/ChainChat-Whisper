@@ -89,9 +89,7 @@ class ListItems extends Component {
             <div className="content">
               <div className="title">
                 <p className="name">{data.name}</p>
-                {!showAsContacts && (
-                  <span className="time">{!!data.time && toNormalTime(data.time)}</span>
-                )}
+                {!showAsContacts && <span className="time">{!!data.time && data.time}</span>}
               </div>
               {!showAsContacts && (
                 <div className="message">

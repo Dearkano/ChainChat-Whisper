@@ -116,11 +116,23 @@ export default class ChatContentList extends Component {
         isMe = this._userInfo && this._userInfo.user_id === item.from_user;
       }
       let message;
+      let fileUrl;
       if (item.message) {
         const beginWithName = /\S.*:\s/.test(item.message);
-        message = beginWithName ? item.message.substring(item.name.length + 2) : item.message;
+        console.log(item)
+        const metaDataStr = beginWithName
+          ? item.message.substring(item.username.length + 2)
+          : item.message;
+        const metaData = JSON.parse(metaDataStr);
+        if (metaData.type === 'text') {
+          message = metaData.text;
+        } else {
+          const afid = metaData.afid;
+          const name = metaData.fileName;
+          fileUrl = `http://39.108.80.53:7018/dn/files/${afid}/${name}`;
+        }
       }
-      const time = toNormalTime(item.time);
+      const time = item.time;
       const attachments = item.attachments;
       if (item.tip) {
         return (
@@ -135,13 +147,14 @@ export default class ChatContentList extends Component {
             me={isMe}
             img={item.avatar}
             msg={message}
-            name={item.name}
+            name={item.username}
             time={time}
             github_id={item.github_id}
             clickImage={this.clickImage}
             shouldScrollIntoView={!(this._scrollHeight && this._loadingNewMessages)}
             clickAvatar={() => clickAvatar(item.from_user)}
             attachments={attachments}
+            fileUrl={fileUrl}
           />
         </li>
       );

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './index.scss';
+import Web3 from 'web3';
 import Request from '../../utils/request';
 import Modal from '../../components/Modal';
 import notification from '../../components/Notification';
@@ -28,11 +29,24 @@ export default class Register extends Component {
       return;
     }
     try {
-      const res = await Request.axios('post', '/api/v1/register', {
-        name,
-        password,
+      const web3 = new Web3(new Web3.providers.HttpProvider('http://47.100.192.19:8545'));
+      const shh = web3.shh;
+      const id = await shh.newKeyPair();
+      const pubKey = await shh.getPublicKey(id);
+      const headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+      const response = await fetch('http://localhost:7001/register', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          username: name,
+          password,
+          pubKey,
+          asymKeyId: id,
+        }),
       });
-      if (res && res.success) {
+      const data = await response.json();
+      if (data.success) {
         // 弹窗
         this.setState({
           modal: {
@@ -40,7 +54,7 @@ export default class Register extends Component {
           },
         });
       } else {
-        notification(res.message, 'error');
+        notification(data.message, 'error');
       }
     } catch (error) {
       notification(error, 'error');

@@ -34,26 +34,26 @@ export default class Chat {
     return new Promise((resolve, reject) => {
       if (!this._hasLoadAllMessages) {
         try {
-          window.socket.emit(
-            'getOneGroupMessages',
-            { groupId: chatId, start, count },
-            groupMessages => {
-              if (groupMessages && groupMessages.length === 0) {
-                this._hasLoadAllMessages = true;
-                notification('已经到底啦', 'warn', 2);
-                reject();
-              }
-              store.dispatch(
-                addGroupMessagesAction({
-                  allGroupChats: chats,
-                  messages: groupMessages,
-                  groupId: chatId,
-                  inLazyLoading: true,
-                }),
-              );
-              resolve();
-            },
-          );
+          //  window.socket.emit(
+          //   'getOneGroupMessages',
+          //   { groupId: chatId, start, count },
+          //   groupMessages => {
+          //     if (groupMessages && groupMessages.length === 0) {
+          //       this._hasLoadAllMessages = true;
+          //       notification('已经到底啦', 'warn', 2);
+          //       reject();
+          //     }
+          //     store.dispatch(
+          //       addGroupMessagesAction({
+          //         allGroupChats: chats,
+          //         messages: groupMessages,
+          //         groupId: chatId,
+          //         inLazyLoading: true,
+          //       }),
+          //     );
+          //     resolve();
+          //   },
+          // );
         } catch (error) {
           console.log(error);
           notification('出错啦，请稍后再试', 'error');
@@ -67,31 +67,31 @@ export default class Chat {
   lazyLoadPrivateChatMessages({ chats, user_id, chatId, start, count }) {
     return new Promise((resolve, reject) => {
       if (!this._hasLoadAllMessages) {
-        window.socket.emit(
-          'getOnePrivateChatMessages',
-          {
-            user_id,
-            toUser: chatId,
-            start,
-            count,
-          },
-          privateChatMessages => {
-            if (privateChatMessages && privateChatMessages.length === 0) {
-              this._hasLoadAllMessages = true;
-              notification('已经到底啦', 'warn', 2);
-              reject();
-            }
-            store.dispatch(
-              addPrivateChatMessagesAction({
-                allPrivateChats: chats,
-                messages: privateChatMessages,
-                chatId,
-                inLazyLoading: true,
-              }),
-            );
-            resolve('success!');
-          },
-        );
+        // window.socket.emit(
+        //   'getOnePrivateChatMessages',
+        //   {
+        //     user_id,
+        //     toUser: chatId,
+        //     start,
+        //     count,
+        //   },
+        //   privateChatMessages => {
+        //     if (privateChatMessages && privateChatMessages.length === 0) {
+        //       this._hasLoadAllMessages = true;
+        //       notification('已经到底啦', 'warn', 2);
+        //       reject();
+        //     }
+        //     store.dispatch(
+        //       addPrivateChatMessagesAction({
+        //         allPrivateChats: chats,
+        //         messages: privateChatMessages,
+        //         chatId,
+        //         inLazyLoading: true,
+        //       }),
+        //     );
+        //     resolve('success!');
+        //   },
+        // );
       }
     });
   }

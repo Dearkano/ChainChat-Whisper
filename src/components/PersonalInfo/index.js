@@ -26,19 +26,11 @@ class userInfoRender extends Component {
       showShareIcon,
       showShareModal,
     } = this.props;
-    const { name, location, website, github, intro, avatar, company } = userInfo;
+    const { username, pubKey, avatar } = userInfo;
     return (
       <div className="userInfo">
-        <UserAvatar name={name} src={avatar} size="50" />
-        {name && <p className="name">{name}</p>}
-        {intro && <p>{`介绍: ${intro}`}</p>}
-        {location && <p>{`来自: ${location}`}</p>}
-        {company && <p>{`公司: ${company}`}</p>}
-        {/* {status && <p>{status}</p>} */}
-        {website && (
-          <p className="website" onClick={() => _openUrl(website)}>{`网站: ${website}`}</p>
-        )}
-        {github && <p className="github" onClick={() => _openUrl(github)}>{`github: ${github}`}</p>}
+        <UserAvatar name={username} src={avatar} size="50" />
+        {pubKey && <div style={{wordBreak: 'break-all'}}>{pubKey}</div>}
         {showContactButton && (
           <Button
             className={classnames('personalInfoBtn', 'chatBtn')}
@@ -80,21 +72,21 @@ class PersonalInfo extends Component {
       deletePrivateChat,
       allPrivateChats,
     } = this.props;
-    window.socket.emit(
-      'deleteContact',
-      {
-        from_user: myInfo.user_id,
-        to_user: userInfo.user_id,
-      },
-      res => {
-        if (res.code === 200) {
-          deleteHomePageList({ homePageList, chatId: userInfo.user_id });
-          deletePrivateChat({ allPrivateChats, chatId: userInfo.user_id });
-          this.props.hide();
-          notification('删除联系人成功', 'success', 2);
-        }
-      },
-    );
+    // window.socket.emit(
+    //   'deleteContact',
+    //   {
+    //     from_user: myInfo.user_id,
+    //     to_user: userInfo.user_id,
+    //   },
+    //   res => {
+    //     if (res.code === 200) {
+    //       deleteHomePageList({ homePageList, chatId: userInfo.user_id });
+    //       deletePrivateChat({ allPrivateChats, chatId: userInfo.user_id });
+    //       this.props.hide();
+    //       notification('删除联系人成功', 'success', 2);
+    //     }
+    //   },
+    // );
   };
 
   get isContact() {

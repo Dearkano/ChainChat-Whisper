@@ -91,7 +91,7 @@ class GroupChat extends Component {
   leaveGroup = () => {
     const { user_id } = this._userInfo;
     const { homePageList, deleteHomePageList, allGroupChats, deleteGroupChat } = this.props;
-    window.socket.emit('leaveGroup', { user_id, toGroupId: this.chatId });
+    //// window.socket.emit('leaveGroup', { user_id, toGroupId: this.chatId });
     deleteHomePageList({ homePageList, chatId: this.chatId });
     deleteGroupChat({ allGroupChats, groupId: this.chatId });
     this.props.history.push('/');
@@ -142,11 +142,11 @@ class GroupChat extends Component {
     const { allGroupChats } = this.props;
     const chatItem = allGroupChats && allGroupChats.get(this.chatId);
     // (产品设计) 当查找没加过的群，点击去没群内容，请求出群内容，避免不了解而后悔加群
-    if (!chatItem && window.socket) {
-      window.socket.emit('getOneGroupItem', { groupId: this.chatId, start: 1 }, groupMsgAndInfo => {
-        this.setState({ groupMsgAndInfo });
-      });
-    }
+    // if (!chatItem && // window.socket) {
+    //   // window.socket.emit('getOneGroupItem', { groupId: this.chatId, start: 1 }, groupMsgAndInfo => {
+    //   //   this.setState({ groupMsgAndInfo });
+    //   // });
+    // }
   }
 
   get chatId() {

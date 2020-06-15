@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import dayjs from 'dayjs';
 import ChatHeader from '../ChatHeader';
 import InputArea from '../InputArea';
 import ChatContentList from '../ChatContentList';
@@ -8,9 +9,10 @@ import notification from '../Notification';
 import '../../assets/chat.scss';
 import ShareModal from '../ShareModal';
 import Chat from '../../modules/Chat';
-import request from '../../utils/request';
 import debounce from '../../utils/debounce';
 import Button from '../Button';
+import { encodeToHex } from '../../utils/hexUtils';
+import InitApp from '../../modules/InitApp';
 
 export default class PrivateChat extends Component {
   constructor() {
@@ -29,37 +31,102 @@ export default class PrivateChat extends Component {
 
   sendMessage = async (inputMsg = '', attachments = []) => {
     if (inputMsg.trim() === '' && attachments.length === 0) return;
-    const { user_id, avatar, name, github_id } = this._userInfo;
+    const { user_id, avatar, username, github_id } = this._userInfo;
     const {
       allPrivateChats,
       homePageList,
       updateHomePageList,
       addPrivateChatMessages,
     } = this.props;
+    let type = 'text';
+    let metaData = JSON.stringify({
+      type,
+      text: inputMsg,
+    });
+    if (inputMsg === '' && attachments.length !== 0) {
+      type = attachments[0].type;
+      const fileName = attachments[0].name;
+      if (type === 'text' && fileName.slice(fileName.length - 4, fileName.length) === '.txt') {
+        type = 'file';
+      }
+      const body = new FormData();
+      const headers = new Headers();
+      headers.append('Content-Type', 'multipart/form-data');
+      body.append('file', attachments[0].file);
+      const response = await fetch(`http://39.108.80.53:10792/un/files`, {
+        method: 'post',
+        body,
+      });
+      const data = await response.json();
+      const afid = data.afid;
+      metaData = JSON.stringify({
+        type,
+        afid,
+        fileName: attachments[0].name,
+      });
+    }
     const data = {
       from_user: user_id, // 自己的id
       to_user: this.friendId, // 对方id
       avatar, // 自己的头像
-      name,
+      username: username || user_id,
       github_id,
-      message:
-        inputMsg === '' ? `${name}: [${attachments[0].type || 'file'}]` : `${name}: ${inputMsg}`, // 消息内容
+      message: `${username}: ${metaData}`, // 消息内容
       attachments, // 附件
       // time: Date.parse(new Date()) / 1000 // 时间
     };
     this._sendByMe = true;
-    const response = await request.socketEmitAndGetResponse('sendPrivateMsg', data, error => {
-      notification('消息发送失败', 'error', 2);
-    });
+    // const response = await request.socketEmitAndGetResponse('sendPrivateMsg', data, error => {
+    //   notification('消息发送失败', 'error', 2);
+    // });
+    const msg = JSON.stringify(data);
+    const postData = {
+      ttl: 7,
+      topic: encodeToHex('chainchat').substring(0, 10),
+      powTarget: 2.01,
+      powTime: 100,
+      payload: encodeToHex(msg),
+      pubKey: this.friendId,
+      sig: this._userInfo.asymKeyId,
+    };
+    const shh = InitApp.shh;
+    shh.post(postData);
+    const response = {
+      attachments,
+      avatar: '',
+      from_user: this._userInfo.pubKey,
+      message: `${this._userInfo.username}: ${metaData}`,
+      username: this._userInfo.username,
+      time: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      to_user: this.friendId,
+    };
+
     addPrivateChatMessages({
       allPrivateChats,
       message: response,
       chatId: this.friendId,
     });
     // eslint-disable-next-line no-restricted-globals
+    let messageForHomePage = '';
+    if (type === 'image') {
+      messageForHomePage = `${this._userInfo.username}: ${JSON.stringify({
+        text: '[图片]',
+        type,
+      })}`;
+    } else if (type === 'text') {
+      messageForHomePage = `${this._userInfo.username}: ${JSON.stringify({
+        text: inputMsg,
+        type,
+      })}`;
+    } else {
+      messageForHomePage = `${this._userInfo.username}: ${JSON.stringify({
+        text: '[文件]',
+        type,
+      })}`;
+    }
     const dataForHomePage = {
       ...response,
-      name: location.search.split('=')[1],
+      message: messageForHomePage,
     };
     updateHomePageList({
       data: dataForHomePage,
@@ -151,12 +218,15 @@ export default class PrivateChat extends Component {
   componentDidMount() {
     const { allPrivateChats } = this.props;
     const chatItem = allPrivateChats && allPrivateChats.get(this.chatId);
-    if (!chatItem && window.socket) {
-      window.socket.emit('getUserInfo', this.chatId, toUserInfo => {
-        this.setState({
-          toUserInfo,
-        });
-      });
+    if (!chatItem && localStorage.getItem('privateChatList')) {
+      // // window.socket.emit('getUserInfo', this.chatId, toUserInfo => {
+      //   this.setState({
+      //     toUserInfo,
+      //   });
+      // });
+      const privateChatList = new Map(JSON.parse(localStorage.getItem('privateChatList')));
+      const toUserInfo = privateChatList.get(this.chatId);
+      this.setState({ toUserInfo });
     }
   }
 
@@ -172,8 +242,6 @@ export default class PrivateChat extends Component {
     } = this.props;
     const { showPersonalInfo, showShareModal, toUserInfo, disableJoinButton } = this.state;
     if ((!allPrivateChats && !allPrivateChats.size) || !this.chatId) return null;
-    console.log('---')
-    console.log(allPrivateChats)
     const chatItem = allPrivateChats.get(this.chatId);
     const messages = chatItem ? chatItem.messages : [];
     const userInfo = chatItem ? chatItem.userInfo : toUserInfo;
@@ -217,7 +285,7 @@ export default class PrivateChat extends Component {
         ) : (
           initApp && (
             <Button
-              clickFn={debounce(this.addAsTheContact, 2000, true)}
+              clickFn={this.addAsTheContact}
               value="加为联系人"
               disable={disableJoinButton}
               className="button"
@@ -229,12 +297,12 @@ export default class PrivateChat extends Component {
   }
 
   get chatId() {
-    return this.props.match.params.user_id;
+    return this.props.location.pathname.split('private_chat/')[1];
   }
 
   // question: writing as this is ok ?
   get friendId() {
-    return parseInt(this.props.location.pathname.split('private_chat/')[1], 10);
+    return this.props.location.pathname.split('private_chat/')[1];
   }
 }
 

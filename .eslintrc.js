@@ -15,7 +15,6 @@ module.exports = {
   },
   plugins: ['react', 'prettier'],
   rules: {
-    'prettier/prettier': 'error',
 
     /* 'max-len': [
       2,

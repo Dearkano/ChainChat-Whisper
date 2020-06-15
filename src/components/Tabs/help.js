@@ -5,8 +5,7 @@ function initAppOnce(props) {
     throw new Error('please input props for init function');
   }
   if (!props.initializedApp && props.initApp) {
-    const InitAppInstance = new InitApp({ history: props.history });
-    InitAppInstance.init().then(() => {
+    InitApp.init().then(() => {
       props.initApp(true);
     });
   }

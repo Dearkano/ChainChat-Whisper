@@ -108,12 +108,10 @@ export default class InputArea extends Component {
         return;
       }
       if (event.target.readyState === FileReader.DONE) {
-        await this._fetchUpLoadToken();
-        upload(file, this._uploadToken, fileUrl => {
-          const type = file.type.split('/')[0];
-          const attachments = [{ fileUrl, type, name: file.name }];
-          this._sendMessage({ attachments });
-        });
+        // await this._fetchUpLoadToken();
+        const type = file.type.split('/')[0];
+        const attachments = [{ file, type, name: file.name }];
+        this._sendMessage({ attachments });
       }
     };
     reader.readAsArrayBuffer(file);
@@ -192,12 +190,11 @@ export default class InputArea extends Component {
           notification('发的文件不能超过2MB哦!', 'warn', 2);
           return;
         }
-        await this._fetchUpLoadToken();
-        upload(file, this._uploadToken, fileUrl => {
-          const type = file.type.split('/')[0];
-          const attachments = [{ fileUrl, type, name: file.name }];
-          this._sendMessage({ attachments });
-        });
+        // await this._fetchUpLoadToken();
+
+        const type = file.type.split('/')[0];
+        const attachments = [{ file, type, name: file.name }];
+        this._sendMessage({ attachments });
       }
     }
   };

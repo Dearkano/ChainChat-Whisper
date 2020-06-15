@@ -112,23 +112,24 @@ class ChatItem extends Component {
   filesRender = attachments =>
     attachments.map(attachment => {
       if (attachment.type === 'image') {
+        console.log(' ----- in image')
         return (
           <div
             className="image-render"
-            key={attachment.fileUrl}
+            key={this.props.fileUrl}
             onClick={() => {
-              this._clickImage(attachment.fileUrl);
+              this._clickImage(this.props.fileUrl);
             }}
           >
-            <img src={attachment.fileUrl} onLoad={this._onloadImg} alt="" />
+            <img src={this.props.fileUrl} onLoad={this._onloadImg} alt="" />
           </div>
         );
       }
       return (
         <a
-          key={attachment.fileUrl}
+          key={this.props.fileUrl}
           download
-          href={`${attachment.fileUrl}?attname=${attachment.name}`}
+          href={`${this.props.fileUrl}?attname=${attachment.name}`}
           className="other-file-render"
         >
           {attachment.name || 'unknown file'}
@@ -147,7 +148,7 @@ class ChatItem extends Component {
     }
     // TODO: reduce needless render
     // console.log('attachments in chatItem', attachments);
-
+    console.log('time='+time)
     return (
       <div className="chat-item">
         {me ? (
@@ -193,6 +194,7 @@ ChatItem.propTypes = {
   github_id: PropTypes.number,
   shouldScrollIntoView: PropTypes.bool,
   clickImage: PropTypes.func,
+  fileUrl: PropTypes.string,
 };
 
 ChatItem.defaultProps = {
@@ -206,4 +208,5 @@ ChatItem.defaultProps = {
   github_id: null,
   shouldScrollIntoView: true,
   clickImage() {},
+  fileUrl: '',
 };
